@@ -45,7 +45,14 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             'supplier_id' => 'required|exists:suppliers,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $image = $request->file('image');
+        $imageName = time() . '-' . $image->getClientOriginalName();
+        $image_path = '/images/products/' . $imageName;
+        $path = public_path('/images/products/');
+        $image->move($path, $imageName);
 
         Product::create([
             'name' => $request->name,
@@ -55,6 +62,7 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'brand_id' => $request->brand_id,
             'supplier_id' => $request->supplier_id,
+            'image' => $image_path,
         ]);
 
         return redirect()->route('products.list')->with('success', 'Sản phẩm đã được tạo thành công.');
@@ -94,9 +102,30 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             'supplier_id' => 'required|exists:suppliers,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $product = Product::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            // Xóa ảnh cũ nếu tồn tại
+            if ($product->image) {
+                $oldImagePath = public_path($product->image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            // Lưu ảnh mới
+            $image = $request->file('image');
+            $imageName = time() . '-' . $image->getClientOriginalName();
+            $imagePath = '/images/products/' . $imageName;
+            $path = public_path('/images/products/');
+            $image->move($path, $imageName);
+
+            // Cập nhật đường dẫn ảnh
+            $product->image = $imagePath;
+        }
 
         $product->update([
             'name' => $request->name,
@@ -116,7 +145,16 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+
         $product = Product::findOrFail($id);
+
+        if ($product->image) {
+            $imagePath = public_path($product->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
         $product->delete();
 
         return redirect()->route('products.list')->with('success', 'Sản phẩm đã được xóa thành công.');

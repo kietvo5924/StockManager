@@ -18,6 +18,7 @@
                         <th>Danh Mục</th>
                         <th>Thương Hiệu</th>
                         <th>Nhà Cung Cấp</th>
+                        <th>Hình Ảnh</th>
                         <th>Hành Động</th>
                     </tr>
                 </thead>
@@ -32,6 +33,13 @@
                             <td>{{ $product->category->name }}</td>
                             <td>{{ $product->brand->name }}</td>
                             <td>{{ $product->supplier->name }}</td>
+                            <td>
+                                @if ($product->image)
+                                    <img src="{{ asset($product->image) }}" alt="Product Image" width="100" height="100">
+                                @else
+                                    <span>Không có ảnh</span>
+                                @endif
+                            </td>
                             <td>
                                 <a href="{{ route('products.show', $product->id) }}" class="btn btn-info btn-sm">Xem</a>
                                 <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">Sửa</a>

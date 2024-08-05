@@ -18,6 +18,9 @@ use App\Models\Purchase;
 
 // Route gốc
 Route::get('/', [HomePageController::class, 'HomeIndex'])->name('home');
+Route::get('about', [HomePageController::class, 'About'])->name('about');
+Route::get('contact', [HomePageController::class, 'Contact'])->name('contact');
+Route::get('services', [HomePageController::class, 'Service'])->name('services');
 
 // Route đăng nhập và đăng ký
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');

@@ -11,6 +11,21 @@ class HomePageController extends Controller
     {
         $products = Product::all();
 
-        return view('welcome', compact('products'));
+        return view('pages/home', compact('products'));
+    }
+
+    public function About()
+    {
+        return view('pages/about');
+    }
+
+    public function Contact()
+    {
+        return view('pages/contact');
+    }
+
+    public function Service()
+    {
+        return view('pages/services');
     }
 }

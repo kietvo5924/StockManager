@@ -36,7 +36,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Quản lý Hàng Hóa</h5>
                             <p class="card-text">Quản lý các sản phẩm và đơn hàng.</p>
-                            <a href="{{ route('products.index') }}" class="btn btn-primary">Xem Hàng Hóa</a>
+                            <a href="{{ route('products.list') }}" class="btn btn-primary">Xem Hàng Hóa</a>
                         </div>
                     </div>
                 </div>

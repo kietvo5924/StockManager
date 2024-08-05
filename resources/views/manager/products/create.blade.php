@@ -5,8 +5,15 @@
 @section('content')
     <div class="container">
         <h1>Tạo Sản Phẩm Mới</h1>
-        <form action="{{ route('products.store') }}" method="POST">
+        <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <div class="mb-3">
+                <label for="image">Hình Ảnh</label>
+                <input type="file" name="image" id="image" class="form-control" required>
+                @error('image')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
             <div class="mb-3">
                 <label for="name">Tên</label>
                 <input type="text" name="name" id="name" class="form-control" required>

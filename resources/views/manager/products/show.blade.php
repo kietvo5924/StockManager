@@ -11,6 +11,15 @@
             </div>
             <div class="card-body">
                 <p><strong>ID:</strong> {{ $product->id }}</p>
+                <div class="mt-3">
+                    <strong>Hình Ảnh:</strong><br>
+                    @if ($product->image)
+                        <img src="{{ asset($product->image) }}" alt="Product Image" class="img-fluid"
+                            style="max-width: 200px; height: auto;">
+                    @else
+                        <span>Không có ảnh</span>
+                    @endif
+                </div>
                 <p><strong>Tên:</strong> {{ $product->name }}</p>
                 <p><strong>Mô Tả:</strong> {{ $product->description }}</p>
                 <p><strong>Số Lượng:</strong> {{ $product->quantity }}</p>

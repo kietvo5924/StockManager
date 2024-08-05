@@ -12,13 +12,13 @@
                         <a class="nav-link" href="/">Trang Chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Giới Thiệu</a>
+                        <a class="nav-link" href="{{ route('about') }}">Giới Thiệu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Dịch Vụ</a>
+                        <a class="nav-link" href="{{ route('services') }}">Dịch Vụ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Liên Hệ</a>
+                        <a class="nav-link" href="{{ route('contact') }}">Liên Hệ</a>
                     </li>
 
                     @auth

@@ -5,12 +5,25 @@
 @section('content')
     <div class="container">
         <h1>Chỉnh Sửa Sản Phẩm</h1>
-        <form action="{{ route('products.update', $product->id) }}" method="POST">
+        <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="mb-3">
+                <label for="image">Hình Ảnh</label>
+                <input type="file" name="image" id="image" class="form-control">
+                @error('image')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+                @if ($product->image)
+                    <div class="mt-2">
+                        <img src="{{ asset($product->image) }}" alt="Product Image" width="150">
+                    </div>
+                @endif
+            </div>
+            <div class="mb-3">
                 <label for="name">Tên</label>
-                <input type="text" name="name" id="name" class="form-control" value="{{ $product->name }}" required>
+                <input type="text" name="name" id="name" class="form-control" value="{{ $product->name }}"
+                    required>
                 @error('name')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -42,7 +55,8 @@
                 <label for="category_id">Danh Mục</label>
                 <select name="category_id" id="category_id" class="form-control" required>
                     @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                        <option value="{{ $category->id }}"
+                            {{ $product->category_id == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}</option>
                     @endforeach
                 </select>
