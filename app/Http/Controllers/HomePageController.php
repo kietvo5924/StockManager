@@ -14,6 +14,12 @@ class HomePageController extends Controller
         return view('pages/home', compact('products'));
     }
 
+    public function productdetail($id)
+    {
+        $product = Product::with('category', 'brand', 'supplier')->findOrFail($id);
+        return view('pages.productdetail', compact('product'));
+    }
+
     public function About()
     {
         return view('pages/about');

@@ -7,8 +7,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
@@ -18,6 +20,7 @@ use App\Models\Purchase;
 
 // Route gốc
 Route::get('/', [HomePageController::class, 'HomeIndex'])->name('home');
+Route::get('/home/{id}/detail', [HomePageController::class, 'productdetail'])->name('home.products.detail');
 Route::get('about', [HomePageController::class, 'About'])->name('about');
 Route::get('contact', [HomePageController::class, 'Contact'])->name('contact');
 Route::get('services', [HomePageController::class, 'Service'])->name('services');
@@ -31,6 +34,15 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route Dashboard
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('processPayment');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::get('payment/gateway/{order}', [CheckoutController::class, 'paymentGateway'])->name('payment.gateway');
+});
 
 // Route cho Admin
 Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {

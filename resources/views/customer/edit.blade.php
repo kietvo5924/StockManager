@@ -45,7 +45,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Cập Nhật Hồ Sơ</button>
-            <a href="{{ route('admin.users') }}" class="btn btn-secondary">Hủy</a>
+            <a href="{{ route('customer.profile') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
 @endsection
