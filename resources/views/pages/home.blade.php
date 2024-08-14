@@ -28,4 +28,34 @@
             @endforeach
         </div>
     </div>
+
+    <!-- Chatbot -->
+    <style>
+        df-messenger {
+            --df-messenger-button-titlebar-color: #0066cc;
+            --df-messenger-chat-background-color: #f7f7f7;
+            --df-messenger-font-color: #333;
+            --df-messenger-send-icon: #0066cc;
+            --df-messenger-width: 300px;
+            --df-messenger-height: 400px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        df-messenger * {
+            border-radius: 10px;
+        }
+
+        /* Hide default dialogflow icon */
+        df-messenger .df-messenger-wrapper {
+            max-width: 300px;
+            max-height: 400px;
+            border-radius: 10px;
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger chat-title="Chat Bot" agent-id="b348fe55-24ed-423e-874d-e7c1ad9c544f" language-code="vi"></df-messenger>
 @endsection

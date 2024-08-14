@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Stripe\Charge;
+use Stripe\Stripe;
 
 class CheckoutController extends Controller
 {
@@ -77,17 +79,36 @@ class CheckoutController extends Controller
             return redirect()->route('orders.show', ['order' => $order->id])
                 ->with('success', 'Đơn hàng đã được đặt thành công. Đơn hàng của bạn sẽ được giao trong thời gian sớm nhất.');
         } elseif ($paymentType === 'prepaid_by_card') {
-            return redirect()->route('payment.gateway', ['order' => $order->id]);
+            return view('checkout.stripe', compact('order'));
         }
     }
 
-    public function paymentGateway(Order $order)
+    public function paymentGateway(Request $request, Order $order)
     {
-        $order->status = 'completed';
-        $order->payment_status = 'paid';
-        $order->save();
+        $request->validate([
+            'stripeToken' => 'required',
+        ]);
 
-        return redirect()->route('orders.show', ['order' => $order->id])
-            ->with('success', 'Thanh toán thành công. Đơn hàng của bạn đã được xác nhận.');
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        try {
+            // Charge the customer
+            $charge = Charge::create([
+                'amount' => $order->total_price * 100, // Stripe uses cents
+                'currency' => 'usd',
+                'description' => 'Order ID: ' . $order->id,
+                'source' => $request->stripeToken,
+            ]);
+
+            $order->status = 'completed';
+            $order->payment_status = 'paid';
+            $order->save();
+
+            return redirect()->route('orders.show', ['order' => $order->id])
+                ->with('success', 'Thanh toán thành công. Đơn hàng của bạn đã được xác nhận.');
+        } catch (\Exception $e) {
+            return redirect()->route('payment.gateway', ['order' => $order->id])
+                ->with('error', 'Có lỗi xảy ra khi thanh toán. Vui lòng thử lại sau.');
+        }
     }
 }

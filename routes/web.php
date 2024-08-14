@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
-    Route::get('payment/gateway/{order}', [CheckoutController::class, 'paymentGateway'])->name('payment.gateway');
+    Route::post('payment/gateway/{order}', [CheckoutController::class, 'paymentGateway'])->name('payment.gateway');
 });
 
 // Route cho Admin
