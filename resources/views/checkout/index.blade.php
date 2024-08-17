@@ -62,7 +62,9 @@
                             <option value="prepaid_by_card">Thanh toán bằng thẻ</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2">Xác nhận thanh toán</button>
+                    <button type="submit" class="btn btn-primary mt-2"
+                        onclick="return confirm('Bạn có chắc chắn muốn mua sản phẩm này không?')">Xác nhận thanh
+                        toán</button>
                     <a href="javascript:history.back()" class="btn btn-secondary ml-2 mt-2">Trở lại</a>
                 </form>
             </div>

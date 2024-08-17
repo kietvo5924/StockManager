@@ -28,3 +28,51 @@ body {
     background-color: #f8f9fa;
     /* Màu nền nếu ảnh ngắn hơn */
 }
+
+/* style cho sao đánh giá sản phẩm */
+.stars {
+    display: grid;
+    grid-template-columns: repeat(5, auto); /* 5 cột cho 5 ngôi sao */
+    font-size: 1.8rem;
+    color: #ccc; /* Màu ngôi sao khi chưa chọn */
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    justify-content: start; /* Đảm bảo các ngôi sao nằm ở góc trái */
+    position: relative;
+}
+
+/* Ẩn các radio buttons */
+.stars {
+    display: flex;
+    flex-direction: row; /* Ngôi sao được sắp xếp từ trái sang phải */
+    font-size: 1.8rem;
+    color: #ccc; /* Màu ngôi sao khi chưa chọn */
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.stars input {
+    display: none; /* Ẩn radio buttons */
+}
+
+.stars label {
+    color: #ccc; /* Màu ngôi sao khi chưa chọn */
+    text-shadow: 0 0 1px #000;
+    margin-right: 0.1rem; /* Khoảng cách giữa các ngôi sao */
+    position: relative;
+    z-index: 1; /* Đảm bảo ngôi sao không bị che khuất */
+}
+
+/* Khi radio button được chọn, tô màu vàng từ ngôi sao được chọn và tất cả các ngôi sao bên trái */
+.stars input:checked ~ label,
+.stars label:hover ~ label {
+    color: #FFD700; /* Màu vàng cho ngôi sao đã chọn và các ngôi sao bên trái */
+}
+
+/* Khi di chuột lên ngôi sao, tô màu vàng từ ngôi sao đó và tất cả các ngôi sao bên trái */
+.stars label:hover,
+.stars label:hover ~ label {
+    color: #FFD700; /* Màu vàng khi di chuột */
+}
+
+

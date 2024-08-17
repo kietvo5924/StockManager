@@ -20,6 +20,23 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('contact') }}" style="font-size: 1.1rem;">Liên Hệ</a>
                     </li>
+                    @auth
+                        @if (Auth::user()->role == 'staff')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('staff.orders.index') }}" style="font-size: 1.1rem;">Đơn
+                                    đặt hàng</a>
+                            </li>
+                        @endif
+                    @endauth
+
+                    @auth
+                        @if (Auth::user()->role == 'customer')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('orders.index') }}" style="font-size: 1.1rem;">Đơn
+                                    hàng của bạn</a>
+                            </li>
+                        @endif
+                    @endauth
 
                     @auth
                         @if (Auth::user()->role == 'manager')
