@@ -63,6 +63,14 @@ class CheckoutController extends Controller
         $totalPrice = $request->input('total_price');
         $paymentType = $request->input('payment_type');
 
+        // Find the product and update its quantity
+        $product = Product::find($productId);
+        if ($product->quantity < $quantity) {
+            return redirect()->route('home')->with('error', 'Số lượng sản phẩm không đủ để đặt hàng.');
+        }
+        $product->quantity -= $quantity;
+        $product->save();
+
         // Create order
         $order = new Order();
         $order->customer_id = $user->id;

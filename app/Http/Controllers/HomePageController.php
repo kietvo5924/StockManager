@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
 
 class HomePageController extends Controller
@@ -17,7 +18,10 @@ class HomePageController extends Controller
     public function productdetail($id)
     {
         $product = Product::with('category', 'brand', 'supplier')->findOrFail($id);
-        return view('pages.productdetail', compact('product'));
+
+        $averageRating = ProductReview::where('product_id', $product->id)->avg('rating');
+
+        return view('pages.productdetail', compact('product', 'averageRating'));
     }
 
     public function About()

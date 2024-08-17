@@ -12,7 +12,7 @@ class OrderStaffController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('product', 'customer')->get();
+        $orders = Order::with('product', 'customer')->where('status', 'pending')->get();
         return view('staff.orders.index', compact('orders'));
     }
 

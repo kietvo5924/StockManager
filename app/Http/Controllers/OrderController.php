@@ -17,17 +17,12 @@ class OrderController extends Controller
     public function index()
     {
         // Lấy danh sách đơn hàng của người dùng hiện tại
-        $orders = Order::with('product')->where('customer_id', Auth::id())->where('status', '<>', 'completed')->get();
+        $pendingOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'pending')->get();
         $completedOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'completed')->get();
-        $reviews = ProductReview::where('user_id', Auth::id())->pluck('product_id');
+        $cancelOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'cancelled')->get();
 
         // Truyền danh sách đơn hàng vào view
-        return view('customer.orders.index', compact('orders', 'completedOrders', 'reviews'));
-    }
-
-    public function completedOrders()
-    {
-        // 
+        return view('customer.orders.index', compact('pendingOrders', 'completedOrders', 'cancelOrders'));
     }
 
     /**
@@ -49,6 +44,17 @@ class OrderController extends Controller
         // Kiểm tra xem người dùng có quyền hủy đơn hàng này không
         if (Auth::id() !== $order->customer_id) {
             return redirect()->route('orders.index')->with('error', 'Bạn không có quyền hủy đơn hàng này.');
+        }
+
+        if ($order->status === 'completed') {
+            return redirect()->route('orders.index')->with('error', 'Đơn hàng đã hoàn tất không thể hủy.');
+        }
+
+        // Tăng số lượng sản phẩm trở lại
+        $product = Product::find($order->product_id);
+        if ($product) {
+            $product->quantity += $order->quantity;
+            $product->save();
         }
 
         // Cập nhật trạng thái đơn hàng thành 'cancelled'

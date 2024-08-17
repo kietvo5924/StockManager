@@ -18,14 +18,31 @@
                     @endif
                 </div>
             </div>
+
             <!-- Thông tin sản phẩm -->
             <div class="col-md-6">
                 <h2>{{ $product->name }}</h2>
                 <p><strong>Nhà cung cấp:</strong> {{ $product->supplier->name }}</p>
                 <p><strong>Hiệu:</strong> {{ $product->brand->name }}</p>
                 <p><strong>Danh mục:</strong> {{ $product->category->name }}</p>
-                <p>{{ $product->description }}</p>
-                <h3>Giá: {{ $product->price }}$</h3>
+                <p><strong>Mô tả:</strong> {{ $product->description }}</p>
+                <p><strong>Số lượng:</strong> {{ $product->quantity }}</p>
+                <h4>Giá: {{ $product->price }}$</h4>
+
+                <p><strong>Đánh giá:</strong>
+                    <span class="rating-stars" style="font-size: 1.2rem; color: #f39c12; margin-left: 0.5rem;">
+                        @for ($i = 1; $i <= 5; $i++)
+                            @if ($averageRating >= $i)
+                                <i class="fas fa-star"></i>
+                            @elseif ($averageRating >= $i - 0.5)
+                                <i class="fas fa-star-half-alt"></i>
+                            @else
+                                <i class="far fa-star"></i>
+                            @endif
+                        @endfor
+                    </span>
+                </p>
+
                 <form action="{{ route('checkout') }}" method="GET">
                     <div class="form-group">
                         <label for="quantity">Số lượng:</label>
@@ -33,7 +50,12 @@
                             min="1">
                     </div>
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" class="btn btn-primary mt-2">Mua ngay</button>
+
+                    @if ($product->quantity <= 0)
+                        <a href="#" class="btn btn-danger mt-2">Hết hàng</a>
+                    @else
+                        <button type="submit" class="btn btn-primary mt-2">Mua ngay</button>
+                    @endif
                 </form>
             </div>
         </div>

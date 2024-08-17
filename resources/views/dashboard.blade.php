@@ -65,7 +65,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Theo Dõi Đơn Hàng</h5>
                             <p class="card-text">Xem và xử lý các đơn hàng đang chờ xử lý.</p>
-                            <a href="{{ route('purchases.index') }}" class="btn btn-primary">Xem Đơn Hàng</a>
+                            <a href="{{ route('staff.orders.index') }}" class="btn btn-primary">Xem Đơn Hàng</a>
                         </div>
                     </div>
                 </div>
