@@ -7,13 +7,21 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderStaffController extends Controller
 {
     public function index()
     {
         $orders = Order::with('product', 'customer')->where('status', 'pending')->get();
-        return view('staff.orders.index', compact('orders'));
+
+        $pendingOrdersCOD = Order::with('product', 'customer')->where('status', 'pending')->where('payment_type', 'cash_on_delivery')->get();
+        $pendingOrdersCard = Order::with('product', 'customer')->where('status', 'pending')->where('payment_type', 'prepaid_by_card')->get();
+        $completedOrdersCOD = Order::with('product', 'customer')->where('status', 'completed')->where('payment_type', 'cash_on_delivery')->get();
+        $completedOrdersCard = Order::with('product', 'customer')->where('status', 'completed')->where('payment_type', 'prepaid_by_card')->get();
+        $cancelOrders = Order::with('product', 'customer')->where('status', 'cancelled')->get();
+
+        return view('staff.orders.index', compact('orders', 'pendingOrdersCOD', 'pendingOrdersCard', 'completedOrdersCOD', 'completedOrdersCard', 'cancelOrders'));
     }
 
     public function edit(Order $order)
