@@ -59,5 +59,69 @@
                 </form>
             </div>
         </div>
+
+        <!-- Phần bình luận -->
+        <div class="mt-5">
+            <h4>Bình luận về sản phẩm</h4>
+
+            <!-- Khung chứa bình luận -->
+            <div class="border p-3 rounded" style="background-color: #f8f9fa;">
+                @if ($product->reviews->isEmpty())
+                    <div class="text-center p-3">
+                        <p class="mb-0">Chưa có bình luận nào cho sản phẩm này.</p>
+                    </div>
+                @else
+                    <div id="review-list">
+                        @foreach ($product->reviews->sortByDesc('created_at')->take(4) as $review)
+                            <div
+                                class="d-flex flex-column flex-sm-row align-items-start justify-content-between border-bottom pb-2 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <strong>{{ $review->user->name }}:</strong>
+                                    <div class="ml-3 mt-1">
+                                        <p class="mb-1">{{ $review->comment }}</p>
+                                    </div>
+                                </div>
+                                <small style="font-size: 0.85rem; color: #6c757d; min-width: 100px; text-align: right;">
+                                    {{ $review->created_at->format('d/m/Y H:i') }}
+                                </small>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Nút xem tất cả bình luận -->
+                    @if ($product->reviews->count() > 4)
+                        <div class="text-center mt-3">
+                            <button id="load-more-reviews" class="btn btn-secondary">Xem tất cả bình luận</button>
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('load-more-reviews').addEventListener('click', function() {
+            var reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = ''; // Xóa các đánh giá hiện tại
+
+            @foreach ($product->reviews->sortByDesc('created_at') as $review)
+                reviewList.innerHTML += `
+                <div class="d-flex flex-column flex-sm-row align-items-start justify-content-between border-bottom pb-2 mb-2">
+                    <div class="d-flex align-items-center">
+                        <strong>{{ $review->user->name }}:</strong>
+                        <div class="ml-3 mt-1">
+                            <p class="mb-1">{{ $review->comment }}</p>
+                        </div>
+                    </div>
+                    <small style="font-size: 0.85rem; color: #6c757d; min-width: 100px; text-align: right;">
+                        {{ $review->created_at->format('d/m/Y H:i') }}
+                    </small>
+                </div>
+            `;
+            @endforeach
+
+            // Ẩn nút "Xem tất cả bình luận" sau khi đã tải xong tất cả các đánh giá
+            this.style.display = 'none';
+        });
+    </script>
 @endsection

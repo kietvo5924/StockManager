@@ -13,7 +13,7 @@
 
         <h2 class="mb-4">Danh sách sản phẩm</h2>
         <div class="row">
-            @foreach ($products as $product)
+            @foreach ($products->sortByDesc('created_at') as $product)
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <a href="{{ route('home.products.detail', $product->id) }}" class="text-decoration-none text-dark">
                         <div class="card">

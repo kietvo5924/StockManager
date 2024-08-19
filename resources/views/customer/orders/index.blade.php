@@ -6,7 +6,14 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2>Danh sách đơn hàng</h2>
-            <a href="{{ route('product-reviews.index') }}" class="btn btn-info">Xem đánh giá sản phẩm</a>
+            <a href="{{ route('product-reviews.index') }}" class="btn btn-info position-relative">Xem đánh giá sản phẩm
+                @if ($pendingReviewsCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $pendingReviewsCount }}
+                        <span class="visually-hidden">Số lượng đánh giá chưa thực hiện</span>
+                    </span>
+                @endif
+            </a>
         </div>
 
         @if (session('success'))
@@ -56,7 +63,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pendingOrders as $order)
+                        @foreach ($pendingOrders->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->product->name }}</td>
@@ -97,7 +104,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($completedOrders as $order)
+                        @foreach ($completedOrders->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->product->name }}</td>
@@ -129,7 +136,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($cancelOrders as $order)
+                        @foreach ($cancelOrders->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->product->name }}</td>

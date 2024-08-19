@@ -16,13 +16,17 @@ class OrderController extends Controller
      */
     public function index()
     {
+        // Truy xuất số lượng đánh giá chưa thực hiện
+        $user = Auth::user();
+        $pendingReviewsCount = $user->reviews->where('status', 'pending')->count();
+
         // Lấy danh sách đơn hàng của người dùng hiện tại
         $pendingOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'pending')->get();
         $completedOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'completed')->get();
         $cancelOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'cancelled')->get();
 
         // Truyền danh sách đơn hàng vào view
-        return view('customer.orders.index', compact('pendingOrders', 'completedOrders', 'cancelOrders'));
+        return view('customer.orders.index', compact('pendingOrders', 'completedOrders', 'cancelOrders', 'pendingReviewsCount'));
     }
 
     /**

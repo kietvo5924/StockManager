@@ -1,3 +1,16 @@
+@php
+    // Sắp xếp các đánh giá theo trạng thái và thời gian tạo
+    $sortedReviews = $reviews->sort(function ($a, $b) {
+        if ($a->status == 'pending' && $b->status != 'pending') {
+            return -1;
+        } elseif ($a->status != 'pending' && $b->status == 'pending') {
+            return 1;
+        } else {
+            return $b->created_at <=> $a->created_at;
+        }
+    });
+@endphp
+
 @extends('layouts.main')
 
 @section('title', 'Đánh giá sản phẩm')
@@ -17,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($reviews as $review)
+                @foreach ($sortedReviews as $review)
                     <tr>
                         <td>{{ $review->user->name }}</td>
                         <td>{{ $review->product->name }}</td>

@@ -17,7 +17,7 @@ class HomePageController extends Controller
 
     public function productdetail($id)
     {
-        $product = Product::with('category', 'brand', 'supplier')->findOrFail($id);
+        $product = Product::with('category', 'brand', 'supplier', 'reviews.user')->findOrFail($id);
 
         $averageRating = ProductReview::where('product_id', $product->id)->avg('rating');
 
