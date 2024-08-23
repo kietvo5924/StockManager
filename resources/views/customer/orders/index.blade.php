@@ -71,7 +71,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pendingOrders->sortByDesc('created_at') as $order)
+                        @foreach ($pendingOrders as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->product->name }}</td>
@@ -115,7 +115,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($completedOrders->sortByDesc('created_at') as $order)
+                        @foreach ($completedOrders as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->product->name }}</td>
@@ -150,7 +150,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($cancelOrders->sortByDesc('created_at') as $order)
+                        @foreach ($cancelOrders as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->product->name }}</td>

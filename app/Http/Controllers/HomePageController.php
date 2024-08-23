@@ -13,7 +13,7 @@ class HomePageController extends Controller
         $search = $request->input('search');
 
         // Bắt đầu với một query builder
-        $query = Product::query();
+        $query = Product::query()->orderBy('created_at', 'desc');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -23,7 +23,7 @@ class HomePageController extends Controller
         }
 
         // Thực hiện query và lấy kết quả
-        $products = $query->get();
+        $products = $query->paginate(36, ['*'], 'page');
 
         return view('pages/home', compact('products'));
     }

@@ -24,7 +24,8 @@
                 <!-- Bảng sản phẩm sẽ được hiển thị ở đây sau khi chọn nhà cung cấp -->
             </div>
 
-            <button type="submit" class="btn btn-primary">Tạo Mới</button>
+            <button type="submit" class="btn btn-primary"
+                onclick="return confirm('Bạn có chắc muốn thêm sản phẩm này không?')">Tạo Mới</button>
             <a href="{{ route('purchases.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>

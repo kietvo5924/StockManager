@@ -75,7 +75,8 @@
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-            <button type="submit" class="btn btn-success">Thêm</button>
+            <button type="submit" class="btn btn-success"
+                onclick="return confirm('Bạn có chắc muốn thêm sản phẩm này không?')">Thêm</button>
             <a href="{{ route('products.list') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>

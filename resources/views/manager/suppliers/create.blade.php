@@ -37,7 +37,8 @@
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-            <button type="submit" class="btn btn-primary">Tạo</button>
+            <button type="submit" class="btn btn-primary"
+                onclick="return confirm('Bạn có chắc muốn thêm sản phẩm này không?')">Tạo</button>
             <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>

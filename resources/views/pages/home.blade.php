@@ -14,7 +14,7 @@
         <h2 class="mb-4">Danh sách sản phẩm</h2>
 
         <form method="GET" action="{{ route('home') }}" class="mb-4">
-            <div class="input-group mb-3 mx-auto" style="max-width: 600px;">
+            <div class="input-group mb-3 mx-auto" style="max-width: 700px;">
                 <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm..."
                     value="{{ request('search') }}">
                 <button class="btn btn-primary" type="submit">Tìm kiếm</button>
@@ -22,7 +22,7 @@
         </form>
 
         <div class="row">
-            @foreach ($products->sortByDesc('created_at') as $product)
+            @foreach ($products as $product)
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <a href="{{ route('home.products.detail', $product->id) }}" class="text-decoration-none text-dark">
                         <div class="card">
@@ -47,6 +47,9 @@
                     </a>
                 </div>
             @endforeach
+            <div class="d-flex justify-content-center mt-4">
+                {{ $products->links('pagination::bootstrap-4') }}
+            </div>
         </div>
     </div>
 

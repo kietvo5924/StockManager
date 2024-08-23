@@ -18,7 +18,7 @@ class OrderController extends Controller
     {
         $search = $request->input('search');
 
-        $ordersQuery = Order::with('product');
+        $ordersQuery = Order::with('product')->orderBy('created_at', 'desc');
 
         if ($search) {
             $ordersQuery->where(function ($query) use ($search) {

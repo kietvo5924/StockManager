@@ -67,7 +67,8 @@
                     value="{{ $purchase->purchase_date }}">
             </div>
 
-            <button type="submit" class="btn btn-primary">Cấp Nhật</button>
+            <button type="submit" class="btn btn-primary"
+                onclick="return confirm('Bạn có chắc muốn lưu thay đổi sản phẩm này không?')">Cấp Nhật</button>
             <a href="{{ route('purchases.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
