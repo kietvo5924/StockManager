@@ -8,9 +8,22 @@ use Illuminate\Http\Request;
 
 class HomePageController extends Controller
 {
-    public function HomeIndex()
+    public function HomeIndex(Request $request)
     {
-        $products = Product::all();
+        $search = $request->input('search');
+
+        // Bắt đầu với một query builder
+        $query = Product::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
+        // Thực hiện query và lấy kết quả
+        $products = $query->get();
 
         return view('pages/home', compact('products'));
     }

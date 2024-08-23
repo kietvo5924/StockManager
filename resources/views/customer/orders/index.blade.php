@@ -4,6 +4,14 @@
 
 @section('content')
     <div class="container mt-4">
+        <form method="GET" action="{{ route('orders.index') }}" class="mb-4">
+            <div class="input-group mb-3 mx-auto" style="max-width: 600px;">
+                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm đơn hàng..."
+                    value="{{ request('search') }}">
+                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            </div>
+        </form>
+
         <div class="d-flex justify-content-between align-items-center">
             <h2>Danh sách đơn hàng</h2>
             <a href="{{ route('product-reviews.index') }}" class="btn btn-info position-relative">Xem đánh giá sản phẩm
@@ -87,6 +95,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $pendingOrders->links('pagination::bootstrap-4') }}
+                </div>
             </div>
 
             <!-- Completed Orders -->
@@ -120,6 +131,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $completedOrders->links('pagination::bootstrap-4') }}
+                </div>
             </div>
 
             <!-- Cancelled Orders -->
@@ -148,7 +162,29 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $cancelOrders->links('pagination::bootstrap-4') }}
+                </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Khôi phục tab đã chọn từ localStorage
+                const activeTab = localStorage.getItem('activeTab') || 'pending-orders';
+                const tab = document.querySelector(`#${activeTab}-tab`);
+                if (tab) {
+                    new bootstrap.Tab(tab).show();
+                }
+
+                // Lưu trạng thái tab khi người dùng thay đổi
+                const tabs = document.querySelectorAll('#orderTabs .nav-link');
+                tabs.forEach(tab => {
+                    tab.addEventListener('shown.bs.tab', function() {
+                        localStorage.setItem('activeTab', this.getAttribute('aria-controls'));
+                    });
+                });
+            });
+        </script>
     </div>
 @endsection

@@ -194,6 +194,16 @@ class PurchaseController extends Controller
             return redirect()->route('purchases.index')->with('error', 'Không thể thay đổi trạng thái từ "Hoàn thành" sang trạng thái khác.');
         }
 
+        if ($newStatus == 'completed' && $purchase->status != 'completed') {
+            $purchaseProducts = $purchase->products;
+
+            foreach ($purchaseProducts as $purchaseProduct) {
+                $product = $purchaseProduct->product;
+                $product->quantity += $purchaseProduct->quantity;
+                $product->save();
+            }
+        }
+
         if (in_array($newStatus, ['pending', 'completed', 'cancelled'])) {
             $purchase->status = $newStatus;
             $purchase->save();

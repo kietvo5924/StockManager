@@ -3,8 +3,8 @@
 @section('title', 'Danh Sách Đơn Hàng')
 
 @section('content')
-    <div class="container">
-        <h2>Danh sách đơn hàng</h2>
+    <div class="container mt-2">
+        <h2 class="text-center mb-3">Danh sách đơn hàng</h2>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -20,7 +20,16 @@
             </div>
         @endif
 
-        <ul class="nav nav-tabs" id="orderTabs" role="tablist">
+        <!-- Form tìm kiếm -->
+        <form method="GET" action="{{ route('staff.orders.index') }}" class="mb-4">
+            <div class="input-group mb-3 mx-auto" style="max-width: 600px;">
+                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm đơn hàng..."
+                    value="{{ request('search') }}">
+                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            </div>
+        </form>
+
+        <ul class="nav nav-tabs mb-4" id="orderTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="pending-orders-cod-tab" data-bs-toggle="tab" href="#pending-orders-cod"
                     role="tab" aria-controls="pending-orders-cod" aria-selected="true">Thanh toán khi nhận hàng
@@ -48,7 +57,7 @@
             <!-- Thanh toán khi nhận hàng (COD) -->
             <div class="tab-pane fade show active" id="pending-orders-cod" role="tabpanel"
                 aria-labelledby="pending-orders-cod-tab">
-                <table class="table">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -70,23 +79,28 @@
                                 <td>{{ $order->customer->name }}</td>
                                 <td>{{ $order->product->name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                <td>${{ $order->total_price }}</td>
+                                <td>${{ number_format($order->total_price, 2) }}</td>
                                 <td>{{ $order->order_date }}</td>
                                 <td>{{ $order->status }}</td>
                                 <td>{{ $order->payment_status }}</td>
                                 <td>{{ $order->payment_type }}</td>
                                 <td>
-                                    <a href="{{ route('staff.orders.edit', $order->id) }}" class="btn btn-warning">Edit</a>
+                                    <a href="{{ route('staff.orders.edit', $order->id) }}"
+                                        class="btn btn-warning btn-sm">Edit</a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $pendingOrdersCOD->links('pagination::bootstrap-4') }}
+                </div>
             </div>
 
             <!-- Thanh toán qua thẻ (Card) -->
             <div class="tab-pane fade" id="pending-orders-card" role="tabpanel" aria-labelledby="pending-orders-card-tab">
-                <table class="table">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -108,23 +122,28 @@
                                 <td>{{ $order->customer->name }}</td>
                                 <td>{{ $order->product->name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                <td>${{ $order->total_price }}</td>
+                                <td>${{ number_format($order->total_price, 2) }}</td>
                                 <td>{{ $order->order_date }}</td>
                                 <td>{{ $order->status }}</td>
                                 <td>{{ $order->payment_status }}</td>
                                 <td>{{ $order->payment_type }}</td>
                                 <td>
-                                    <a href="{{ route('staff.orders.edit', $order->id) }}" class="btn btn-warning">Edit</a>
+                                    <a href="{{ route('staff.orders.edit', $order->id) }}"
+                                        class="btn btn-warning btn-sm">Edit</a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $pendingOrdersCard->links('pagination::bootstrap-4') }}
+                </div>
             </div>
 
             <!-- Đơn đã thanh toán (COD) -->
             <div class="tab-pane fade" id="completed-orders-cod" role="tabpanel" aria-labelledby="completed-orders-cod-tab">
-                <table class="table">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -139,13 +158,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($completedOrdersCOD as $order)
+                        @foreach ($completedOrdersCOD->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->customer->name }}</td>
                                 <td>{{ $order->product->name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                <td>${{ $order->total_price }}</td>
+                                <td>${{ number_format($order->total_price, 2) }}</td>
                                 <td>{{ $order->order_date }}</td>
                                 <td>{{ $order->status }}</td>
                                 <td>{{ $order->payment_status }}</td>
@@ -154,12 +173,16 @@
                         @endforeach
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $completedOrdersCOD->links('pagination::bootstrap-4') }}
+                </div>
             </div>
 
             <!-- Đơn đã thanh toán (Card) -->
             <div class="tab-pane fade" id="completed-orders-card" role="tabpanel"
                 aria-labelledby="completed-orders-card-tab">
-                <table class="table">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -174,13 +197,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($completedOrdersCard as $order)
+                        @foreach ($completedOrdersCard->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->customer->name }}</td>
                                 <td>{{ $order->product->name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                <td>${{ $order->total_price }}</td>
+                                <td>${{ number_format($order->total_price, 2) }}</td>
                                 <td>{{ $order->order_date }}</td>
                                 <td>{{ $order->status }}</td>
                                 <td>{{ $order->payment_status }}</td>
@@ -189,11 +212,15 @@
                         @endforeach
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $completedOrdersCard->links('pagination::bootstrap-4') }}
+                </div>
             </div>
 
             <!-- Đơn hàng đã hủy -->
             <div class="tab-pane fade" id="cancel-orders" role="tabpanel" aria-labelledby="cancel-orders-tab">
-                <table class="table">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -208,13 +235,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($cancelOrders as $order)
+                        @foreach ($cancelOrders->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->customer->name }}</td>
                                 <td>{{ $order->product->name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                <td>${{ $order->total_price }}</td>
+                                <td>${{ number_format($order->total_price, 2) }}</td>
                                 <td>{{ $order->order_date }}</td>
                                 <td>{{ $order->status }}</td>
                                 <td>{{ $order->payment_status }}</td>
@@ -223,7 +250,30 @@
                         @endforeach
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $cancelOrders->links('pagination::bootstrap-4') }}
+                </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Khôi phục tab đã chọn từ localStorage
+                const activeTab = localStorage.getItem('activeTab') || 'pending-orders-cod';
+                const tab = document.querySelector(`#${activeTab}-tab`);
+                if (tab) {
+                    new bootstrap.Tab(tab).show();
+                }
+
+                // Lưu trạng thái tab khi người dùng thay đổi
+                const tabs = document.querySelectorAll('#orderTabs .nav-link');
+                tabs.forEach(tab => {
+                    tab.addEventListener('shown.bs.tab', function() {
+                        localStorage.setItem('activeTab', this.getAttribute('aria-controls'));
+                    });
+                });
+            });
+        </script>
     </div>
 @endsection

@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($purchases as $purchase)
+                @foreach ($purchases->sortByDesc('created_at') as $purchase)
                     <tr>
                         <td>{{ $purchase->id }}</td>
                         <td>{{ $purchase->supplier->name }}</td>

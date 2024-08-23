@@ -14,16 +14,29 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+
+        $ordersQuery = Order::with('product');
+
+        if ($search) {
+            $ordersQuery->where(function ($query) use ($search) {
+                $query->whereHas('product', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
         // Truy xuất số lượng đánh giá chưa thực hiện
         $user = Auth::user();
         $pendingReviewsCount = $user->reviews->where('status', 'pending')->count();
 
         // Lấy danh sách đơn hàng của người dùng hiện tại
-        $pendingOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'pending')->get();
-        $completedOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'completed')->get();
-        $cancelOrders = Order::with('product')->where('customer_id', Auth::id())->where('status', 'cancelled')->get();
+        $pendingOrders = $ordersQuery->clone()->where('customer_id', Auth::id())->where('status', 'pending')->paginate(10, ['*'], 'pending_orders');
+        $completedOrders = $ordersQuery->clone()->where('customer_id', Auth::id())->where('status', 'completed')->paginate(10, ['*'], 'completed_orders');
+        $cancelOrders = $ordersQuery->clone()->where('customer_id', Auth::id())->where('status', 'cancelled')->paginate(10, ['*'], 'cancel_orders');
 
         // Truyền danh sách đơn hàng vào view
         return view('customer.orders.index', compact('pendingOrders', 'completedOrders', 'cancelOrders', 'pendingReviewsCount'));

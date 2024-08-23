@@ -11,17 +11,33 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderStaffController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('product', 'customer')->where('status', 'pending')->get();
+        $search = $request->input('search');
 
-        $pendingOrdersCOD = Order::with('product', 'customer')->where('status', 'pending')->where('payment_type', 'cash_on_delivery')->get();
-        $pendingOrdersCard = Order::with('product', 'customer')->where('status', 'pending')->where('payment_type', 'prepaid_by_card')->get();
-        $completedOrdersCOD = Order::with('product', 'customer')->where('status', 'completed')->where('payment_type', 'cash_on_delivery')->get();
-        $completedOrdersCard = Order::with('product', 'customer')->where('status', 'completed')->where('payment_type', 'prepaid_by_card')->get();
-        $cancelOrders = Order::with('product', 'customer')->where('status', 'cancelled')->get();
+        // Tạo truy vấn cơ bản
+        $ordersQuery = Order::with('product', 'customer');
 
-        return view('staff.orders.index', compact('orders', 'pendingOrdersCOD', 'pendingOrdersCard', 'completedOrdersCOD', 'completedOrdersCard', 'cancelOrders'));
+        if ($search) {
+            $ordersQuery->where(function ($query) use ($search) {
+                $query->whereHas('product', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                    ->orWhereHas('customer', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
+        // Thực hiện phân trang cho từng loại đơn hàng với tham số phân trang khác nhau
+        $pendingOrdersCOD = $ordersQuery->clone()->where('status', 'pending')->where('payment_type', 'cash_on_delivery')->paginate(10, ['*'], 'pending_cod_page');
+        $pendingOrdersCard = $ordersQuery->clone()->where('status', 'pending')->where('payment_type', 'prepaid_by_card')->paginate(10, ['*'], 'pending_card_page');
+        $completedOrdersCOD = $ordersQuery->clone()->where('status', 'completed')->where('payment_type', 'cash_on_delivery')->paginate(10, ['*'], 'completed_cod_page');
+        $completedOrdersCard = $ordersQuery->clone()->where('status', 'completed')->where('payment_type', 'prepaid_by_card')->paginate(10, ['*'], 'completed_card_page');
+        $cancelOrders = $ordersQuery->clone()->where('status', 'cancelled')->paginate(10, ['*'], 'cancel_page');
+
+        return view('staff.orders.index', compact('pendingOrdersCOD', 'pendingOrdersCard', 'completedOrdersCOD', 'completedOrdersCard', 'cancelOrders'));
     }
 
     public function edit(Order $order)
