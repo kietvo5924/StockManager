@@ -22,18 +22,28 @@
                     </li>
                     @auth
                         @if (Auth::user()->role == 'staff')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('staff.orders.index') }}" style="font-size: 1.1rem;">Đơn
-                                    đặt hàng</a>
+                            <li class="nav-item position-relative">
+                                <a class="nav-link" href="{{ route('staff.orders.index') }}" style="font-size: 1.1rem;">
+                                    Đơn đặt hàng
+                                    <span id="pending-orders-count"
+                                        class="position-absolute top-0 start-100 translate-middle d-none">
+                                        <span class="visually-hidden">Thông báo</span>
+                                    </span>
+                                </a>
                             </li>
                         @endif
                     @endauth
 
                     @auth
                         @if (Auth::user()->role == 'customer')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('orders.index') }}" style="font-size: 1.1rem;">Đơn
-                                    hàng của bạn</a>
+                            <li class="nav-item position-relative">
+                                <a class="nav-link" href="{{ route('orders.index') }}" style="font-size: 1.1rem;">
+                                    Đơn hàng của bạn
+                                    <span id="pending-count"
+                                        class="position-absolute top-0 start-100 translate-middle d-none">
+                                        <span class="visually-hidden">Thông báo</span>
+                                    </span>
+                                </a>
                             </li>
                         @endif
                     @endauth
@@ -114,3 +124,38 @@
         min-width: 150px;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cập nhật số lượng cho vai trò 'staff'
+        const countElement = document.getElementById('pending-orders-count');
+
+        if (countElement) {
+            fetch('/api/pending-orders-count')
+                .then(response => response.json())
+                .then(data => {
+                    const totalCount = data.cash_on_delivery + data.prepaid_by_card;
+                    if (totalCount > 0) {
+                        countElement.classList.remove('d-none');
+                    } else {
+                        countElement.classList.add('d-none');
+                    }
+                });
+        }
+
+        // Cập nhật số lượng cho vai trò 'customer'
+        const customerCountElement = document.getElementById('pending-count');
+        if (customerCountElement) {
+            fetch('/api/customer-pending-count') // Thay đổi URL nếu cần
+                .then(response => response.json())
+                .then(data => {
+                    const customerPendingCount = data.pending_count; // Điều chỉnh trường dữ liệu
+                    if (customerPendingCount > 0) {
+                        customerCountElement.classList.remove('d-none');
+                    } else {
+                        customerCountElement.classList.add('d-none');
+                    }
+                });
+        }
+    });
+</script>

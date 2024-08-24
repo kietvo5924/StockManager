@@ -40,7 +40,7 @@
                             @endif
                             <div class="card-body">
                                 <h5 class="card-title">{{ $product->name }}</h5>
-                                <p class="card-text">{{ Str::limit($product->description, 100, '...') }}</p>
+                                <p class="card-text">{{ Str::limit($product->description, 27, '...') }}</p>
                                 <p class="card-text">Giá: {{ $product->price }}</p>
                             </div>
                         </div>

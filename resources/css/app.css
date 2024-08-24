@@ -21,59 +21,59 @@ body {
 .fixed-img {
     width: 100%;
     height: 250px;
-    /* Chiều cao cố định cho tất cả ảnh */
     object-fit: cover;
     object-position: center center;
-    /* Canh giữa ảnh nếu cần chèn khoảng trắng */
     background-color: #f8f9fa;
-    /* Màu nền nếu ảnh ngắn hơn */
 }
+
+/***********************************************/
 
 /* style cho sao đánh giá sản phẩm */
 .stars {
     display: grid;
-    grid-template-columns: repeat(5, auto); /* 5 cột cho 5 ngôi sao */
+    grid-template-columns: repeat(5, auto);
     font-size: 1.8rem;
-    color: #ccc; /* Màu ngôi sao khi chưa chọn */
+    color: #ccc;
     cursor: pointer;
     margin-bottom: 0.5rem;
-    justify-content: start; /* Đảm bảo các ngôi sao nằm ở góc trái */
+    justify-content: start;
     position: relative;
 }
 
 /* Ẩn các radio buttons */
 .stars {
     display: flex;
-    flex-direction: row; /* Ngôi sao được sắp xếp từ trái sang phải */
+    flex-direction: row;
     font-size: 1.8rem;
-    color: #ccc; /* Màu ngôi sao khi chưa chọn */
+    color: #ccc;
     cursor: pointer;
     margin-bottom: 0.5rem;
 }
 
 .stars input {
-    display: none; /* Ẩn radio buttons */
+    display: none;
 }
 
 .stars label {
-    color: #ccc; /* Màu ngôi sao khi chưa chọn */
+    color: #ccc;
     text-shadow: 0 0 1px #000;
-    margin-right: 0.1rem; /* Khoảng cách giữa các ngôi sao */
+    margin-right: 0.1rem;
     position: relative;
-    z-index: 1; /* Đảm bảo ngôi sao không bị che khuất */
+    z-index: 1;
 }
 
 /* Khi radio button được chọn, tô màu vàng từ ngôi sao được chọn và tất cả các ngôi sao bên trái */
-.stars input:checked ~ label,
-.stars label:hover ~ label {
-    color: #FFD700; /* Màu vàng cho ngôi sao đã chọn và các ngôi sao bên trái */
+.stars input:checked~label,
+.stars label:hover~label {
+    color: #FFD700;
 }
 
-/* Khi di chuột lên ngôi sao, tô màu vàng từ ngôi sao đó và tất cả các ngôi sao bên trái */
 .stars label:hover,
-.stars label:hover ~ label {
-    color: #FFD700; /* Màu vàng khi di chuột */
+.stars label:hover~label {
+    color: #FFD700;
 }
+
+/*********************************************************/
 
 /* Css cho nút phân trang */
 .pagination {
@@ -91,3 +91,37 @@ body {
     border-color: #007bff;
     color: white;
 }
+
+/*********************************************************/
+
+/* Điều chỉnh kích thước và vị trí của dấu chấm đỏ cho thông báo*/
+.position-relative {
+    position: relative;
+}
+
+#pending-orders-count, 
+#pending-count {
+    width: 10px;
+    height: 10px;
+    font-size: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* Tạo hình tròn */
+}
+
+#pending-orders-count::before,
+#pending-count::before {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    position: absolute;
+    top: 12px;
+    right: 5px;
+}
+
+/*********************************************************/

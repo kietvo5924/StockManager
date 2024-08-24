@@ -33,11 +33,39 @@ class OrderStaffController extends Controller
         // Thực hiện phân trang cho từng loại đơn hàng với tham số phân trang khác nhau
         $pendingOrdersCOD = $ordersQuery->clone()->where('status', 'pending')->where('payment_type', 'cash_on_delivery')->paginate(10, ['*'], 'pending_cod_page');
         $pendingOrdersCard = $ordersQuery->clone()->where('status', 'pending')->where('payment_type', 'prepaid_by_card')->paginate(10, ['*'], 'pending_card_page');
-        $completedOrdersCOD = $ordersQuery->clone()->where('status', 'completed')->where('payment_type', 'cash_on_delivery')->paginate(10, ['*'], 'completed_cod_page');
-        $completedOrdersCard = $ordersQuery->clone()->where('status', 'completed')->where('payment_type', 'prepaid_by_card')->paginate(10, ['*'], 'completed_card_page');
-        $cancelOrders = $ordersQuery->clone()->where('status', 'cancelled')->paginate(10, ['*'], 'cancel_page');
+        $completedOrdersCOD = $ordersQuery->clone()->where('status', 'completed')->where('payment_type', 'cash_on_delivery')->orderBy('created_at', 'desc')->paginate(10, ['*'], 'completed_cod_page');
+        $completedOrdersCard = $ordersQuery->clone()->where('status', 'completed')->where('payment_type', 'prepaid_by_card')->orderBy('created_at', 'desc')->paginate(10, ['*'], 'completed_card_page');
+        $cancelOrders = $ordersQuery->clone()->where('status', 'cancelled')->orderBy('created_at', 'desc')->paginate(10, ['*'], 'cancel_page');
 
         return view('staff.orders.index', compact('pendingOrdersCOD', 'pendingOrdersCard', 'completedOrdersCOD', 'completedOrdersCard', 'cancelOrders'));
+    }
+
+    public function getPendingOrdersCount()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $pendingOrdersCountCashOnDelivery = 0;
+            $pendingOrdersCountPrepaidByCard = 0;
+
+            if ($user->role == 'staff') {
+                // Đếm số lượng đơn hàng chưa thanh toán khi nhận hàng
+                $pendingOrdersCountCashOnDelivery = Order::where('status', 'pending')
+                    ->where('payment_type', 'cash_on_delivery')
+                    ->count();
+
+                // Đếm số lượng đơn hàng chưa thanh toán bằng thẻ
+                $pendingOrdersCountPrepaidByCard = Order::where('status', 'pending')
+                    ->where('payment_type', 'prepaid_by_card')
+                    ->count();
+            }
+
+            return response()->json([
+                'cash_on_delivery' => $pendingOrdersCountCashOnDelivery,
+                'prepaid_by_card' => $pendingOrdersCountPrepaidByCard
+            ]);
+        }
+
+        return response()->json(['count' => 0]);
     }
 
     public function edit(Order $order)

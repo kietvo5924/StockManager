@@ -42,6 +42,28 @@ class OrderController extends Controller
         return view('customer.orders.index', compact('pendingOrders', 'completedOrders', 'cancelOrders', 'pendingReviewsCount'));
     }
 
+    public function getPendingCount()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $pendingCount = 0;
+
+            if ($user->role == 'customer') {
+                $pendingCount = Order::where('customer_id', $user->id)
+                    ->where('status', 'pending')
+                    ->count();
+            }
+
+            return response()->json([
+                'pending_count' => $pendingCount,
+            ]);
+        }
+
+        return response()->json([
+            'pending_count' => 0,
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */

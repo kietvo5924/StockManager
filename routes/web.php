@@ -53,6 +53,7 @@ Route::middleware(['auth', CheckRole::class . ':staff'])->group(function () {
     Route::get('/staff/orders', [OrderStaffController::class, 'index'])->name('staff.orders.index');
     Route::get('/staff/orders/{order}/edit', [OrderStaffController::class, 'edit'])->name('staff.orders.edit');
     Route::put('/staff/orders/{order}', [OrderStaffController::class, 'update'])->name('staff.orders.update');
+    Route::get('/api/pending-orders-count', [OrderStaffController::class, 'getPendingOrdersCount']);
 });
 
 // Route cho Admin
@@ -86,4 +87,5 @@ Route::middleware(['auth', CheckRole::class . ':customer'])->group(function () {
     Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('product-reviews.index');
     Route::get('/reviews/create/{order_id}/{product_id}', [ProductReviewController::class, 'createReview'])->name('reviews.create');
     Route::post('/reviews', [ProductReviewController::class, 'storeReview'])->name('reviews.store');
+    Route::get('/api/customer-pending-count', [OrderController::class, 'getPendingCount']);
 });
