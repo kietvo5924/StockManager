@@ -5,6 +5,15 @@
 @section('content')
     <div class="container">
         <h1>Sản Phẩm</h1>
+
+        <form method="GET" action="{{ route('products.list') }}" class="mb-4">
+            <div class="input-group mb-3 mx-auto" style="max-width: 600px;">
+                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm..."
+                    value="{{ request('search') }}">
+                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            </div>
+        </form>
+
         <a href="{{ route('products.create') }}" class="btn btn-success mb-3">Thêm sản phẩm</a>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
@@ -23,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($products->sortByDesc('created_at') as $product)
+                    @foreach ($products as $product)
                         <tr>
                             <td>{{ $product->id }}</td>
                             <td>{{ $product->name }}</td>
@@ -35,7 +44,8 @@
                             <td>{{ $product->supplier->name }}</td>
                             <td>
                                 @if ($product->image)
-                                    <img src="{{ asset($product->image) }}" alt="Product Image" width="100" height="100">
+                                    <img src="{{ asset($product->image) }}" alt="Product Image" width="100"
+                                        height="100">
                                 @else
                                     <span>Không có ảnh</span>
                                 @endif
@@ -55,6 +65,10 @@
                     @endforeach
                 </tbody>
             </table>
+
+            <div class="d-flex justify-content-center mt-4">
+                {{ $products->links('pagination::bootstrap-4') }}
+            </div>
         </div>
     </div>
 @endsection

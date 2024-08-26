@@ -10,9 +10,21 @@ class SupplierController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $suppliers = Supplier::all();
+        $search = $request->input('search');
+
+        $suppliers = Supplier::query();
+
+        if ($search) {
+            $suppliers->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%")
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
+        $suppliers = $suppliers->paginate(12, ['*'], 'page_suppliers');
 
         return view('manager.suppliers.index', compact('suppliers'));
     }
@@ -33,7 +45,7 @@ class SupplierController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:suppliers',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|max:15|unique:suppliers,phone',
             'address' => 'nullable|string',
         ]);
 

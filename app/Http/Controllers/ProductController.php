@@ -13,9 +13,30 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $search = $request->input('search');
+
+
+        $products = Product::with('brand', 'supplier', 'category')->orderBy('created_at', 'desc');
+
+        if ($search) {
+            $products->where(function ($query) use ($search) {
+                $query->whereHas('brand', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                    ->orWhereHas('supplier', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhere('name', 'like', "%$search%")
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
+        $products = $products->paginate(12, ['*'], 'page_products');
 
         return view('manager.products.index', compact('products'));
     }

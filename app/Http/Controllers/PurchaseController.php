@@ -15,9 +15,22 @@ class PurchaseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $purchases = Purchase::with('products')->get(); // Lấy dữ liệu với quan hệ sản phẩm
+        $search = $request->input('search');
+
+        $purchases = Purchase::with('products', 'supplier')->orderBy('created_at', 'desc');
+
+        if ($search) {
+            $purchases->where(function ($query) use ($search) {
+                $query->WhereHas('supplier', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
+        $purchases = $purchases->paginate(12, ['*'], 'page_purchases');
 
         return view('manager.purchases.index', compact('purchases'));
     }

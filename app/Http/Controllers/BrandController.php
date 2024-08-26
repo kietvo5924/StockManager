@@ -10,9 +10,20 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $brands = Brand::all();
+        $search = $request->input('search');
+
+        $brands = Brand::query();
+
+        if ($search) {
+            $brands->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('id', 'like', "%$search%");
+            });
+        }
+
+        $brands = $brands->paginate(12, ['*'], 'page_brands');
 
         return view('manager.brands.index', compact('brands'));
     }
@@ -31,7 +42,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:brands,name',
             'description' => 'nullable|string',
         ]);
 
