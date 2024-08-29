@@ -19,7 +19,9 @@ class PurchaseController extends Controller
     {
         $search = $request->input('search');
 
-        $purchases = Purchase::with('products', 'supplier')->orderBy('created_at', 'desc');
+        $purchases = Purchase::with('products', 'supplier')
+            ->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
+            ->orderBy('created_at', 'desc');
 
         if ($search) {
             $purchases->where(function ($query) use ($search) {
@@ -132,6 +134,8 @@ class PurchaseController extends Controller
     {
         $purchase = Purchase::findOrFail($id);
 
+        $previousStatus = $purchase->status;
+
         $validatedData = $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'products.*.product_id' => 'required|exists:products,id',
@@ -142,6 +146,7 @@ class PurchaseController extends Controller
 
         $purchaseDate = $request->input('purchase_date') ?? now()->format('Y-m-d');
         $totalAmount = $request->input('total_amount');
+        $newStatus = $request->input('status');
 
         $purchase->update([
             'supplier_id' => $request->input('supplier_id'),
@@ -177,6 +182,10 @@ class PurchaseController extends Controller
                 ['product_id' => $productId],
                 ['quantity' => $quantity, 'total_price' => $totalPrice]
             );
+
+            if ($newStatus === 'completed' && $previousStatus !== 'completed') {
+                $product->increment('quantity', $quantity);
+            }
         }
 
         return redirect()->route('purchases.index')->with('success', 'Đơn mua đã được cập nhật thành công!');

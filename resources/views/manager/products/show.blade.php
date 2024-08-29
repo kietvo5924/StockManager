@@ -27,6 +27,20 @@
                 <p><strong>Danh Mục:</strong> {{ $product->category->name }}</p>
                 <p><strong>Thương Hiệu:</strong> {{ $product->brand->name }}</p>
                 <p><strong>Nhà Cung Cấp:</strong> {{ $product->supplier->name }}</p>
+
+                <div class="mt-3">
+                    <strong>Mã QR:</strong><br>
+                    @php
+                        $qrCodePath = 'images/qrcodes/' . $product->id . '-qrcode.svg';
+                    @endphp
+
+                    @if (file_exists(public_path($qrCodePath)))
+                        <img src="{{ asset($qrCodePath) }}" alt="QR Code" class="img-fluid"
+                            style="max-width: 200px; height: auto;">
+                    @else
+                        <span>Không có mã QR. Đường dẫn: {{ $qrCodePath }}</span>
+                    @endif
+                </div>
             </div>
         </div>
         <a href="{{ route('products.list') }}" class="btn btn-secondary mt-3">Quay lại danh sách</a>

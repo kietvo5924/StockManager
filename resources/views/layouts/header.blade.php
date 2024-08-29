@@ -123,7 +123,48 @@
     .dropdown-menu {
         min-width: 150px;
     }
+
+    /* CSS tùy chỉnh cho header */
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        transition: top 0.3s;
+        z-index: 1000;
+        /* Đảm bảo giá trị z-index cao hơn các phần tử khác */
+    }
+
+    .hidden-header {
+        top: -100px;
+        /* Điều chỉnh giá trị này theo chiều cao của header của bạn */
+    }
+
+    /* Thêm margin-top cho phần tử chính để tránh bị header che khuất */
+    body {
+        margin-top: 120px;
+        /* Điều chỉnh giá trị này theo chiều cao của header */
+    }
 </style>
+
+<script>
+    let lastScrollTop = 0; // Vị trí cuộn trước đó
+    const header = document.querySelector('header');
+
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+            // Cuộn xuống và vị trí cuộn lớn hơn chiều cao header
+            header.classList.add('hidden-header');
+        } else {
+            // Cuộn lên hoặc vị trí cuộn nhỏ hơn chiều cao header
+            header.classList.remove('hidden-header');
+        }
+
+        lastScrollTop = scrollTop; // Cập nhật vị trí cuộn trước đó
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

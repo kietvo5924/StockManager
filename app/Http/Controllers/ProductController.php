@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProductController extends Controller
 {
@@ -69,13 +70,15 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Xử lý hình ảnh
         $image = $request->file('image');
         $imageName = time() . '-' . $image->getClientOriginalName();
-        $image_path = '/images/products/' . $imageName;
+        $imagePath = '/images/products/' . $imageName;
         $path = public_path('/images/products/');
         $image->move($path, $imageName);
 
-        Product::create([
+        // Tạo sản phẩm
+        $product = Product::create([
             'name' => $request->name,
             'description' => $request->description,
             'quantity' => $request->quantity,
@@ -83,8 +86,16 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'brand_id' => $request->brand_id,
             'supplier_id' => $request->supplier_id,
-            'image' => $image_path,
+            'image' => $imagePath,
         ]);
+
+        // Tạo mã QR
+        $qrCode = QrCode::format('svg')->size(300)->generate(url('/home/' . $product->id . '/detail'));
+        $qrCodePath = 'images/qrcodes/' . $product->id . '-qrcode.svg';
+        file_put_contents(public_path($qrCodePath), $qrCode);
+
+        // Cập nhật đường dẫn mã QR trong cơ sở dữ liệu
+        $product->update(['qr_code' => $qrCodePath]);
 
         return redirect()->route('products.list')->with('success', 'Sản phẩm đã được tạo thành công.');
     }
@@ -173,6 +184,13 @@ class ProductController extends Controller
             $imagePath = public_path($product->image);
             if (file_exists($imagePath)) {
                 unlink($imagePath);
+            }
+        }
+
+        if ($product->qr_code) {
+            $qrCodePath = public_path($product->qr_code);
+            if (file_exists($qrCodePath)) {
+                unlink($qrCodePath);
             }
         }
 
